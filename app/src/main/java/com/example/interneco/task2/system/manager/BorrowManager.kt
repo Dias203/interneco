@@ -1,10 +1,22 @@
-package com.example.interneco.task2.system
+package com.example.interneco.task2.system.manager
 
-import com.example.interneco.task2.model.Book
-import com.example.interneco.task2.model.User
-
+import com.example.interneco.task2.utils.borrowBook
+import com.example.interneco.task2.utils.returnBook
+/**
+ * BorrowManager: Lớp quản lý việc mượn trả sách trong thư viện
+ * - Kế thừa từ LibraryManager
+ * - Quản lý danh sách sách được mượn bởi mỗi người dùng
+ *
+ * Chức năng chính:
+ * 1. Mượn sách: Kiểm tra người dùng và sách tồn tại, sau đó thêm vào danh sách mượn
+ * 2. Trả sách: Kiểm tra điều kiện và xóa sách khỏi danh sách mượn
+ * 3. Hiển thị danh sách sách đã mượn của một người dùng
+ * 4. Kiểm tra trạng thái mượn của sách
+ * 5. Thống kê số lượng sách được mượn
+ */
 class BorrowManager : LibraryManager() {
-    private val borrowedBooks = mutableMapOf<String, MutableList<String>>() // Danh sách sách người dùng mượn
+    // Lưu trữ sách được mượn với cấu trúc: userId -> List<bookId>
+    private val borrowedBooks = mutableMapOf<String, MutableList<String>>()
 
     // Phương thức cho mượn sách
     override fun borrowBook(userId: String, bookId: String): Boolean {
@@ -15,6 +27,7 @@ class BorrowManager : LibraryManager() {
             println("Lỗi: Không tìm thấy người dùng với ID = $userId!")
             return false
         }
+
         if (book == null) {
             println("Lỗi: Không tìm thấy sách với ID = $bookId!")
             return false
@@ -32,6 +45,7 @@ class BorrowManager : LibraryManager() {
             println("Lỗi: Không tìm thấy người dùng với ID = $userId!")
             return false
         }
+
         if (book == null) {
             println("Lỗi: Không tìm thấy sách với ID = $bookId!")
             return false
@@ -45,7 +59,7 @@ class BorrowManager : LibraryManager() {
         val user = findUserById(userId)
 
         if (user == null) {
-            println("Lỗi: Không tìm thấy người dùng")
+            println("Lỗi: Không tìm thấy người dùng với ID = $userId!")
             return
         }
 
@@ -65,31 +79,24 @@ class BorrowManager : LibraryManager() {
             println("${index + 1} - $book")
         }
     }
-}
 
-// Extension functions
-fun MutableMap<String, MutableList<String>>.borrowBook(userId: String, bookId: String, user: User, book: Book): Boolean {
-    val userBorrowedBooks = this.getOrPut(userId) { mutableListOf() }
-
-    if (userBorrowedBooks.contains(bookId)) {
-        println("Lỗi: ${user.name} đã mượn sách ${book.title} rồi!")
-        return false
+    // Phương thức kiểm tra xem một quyển sách có đang được mượn không
+    fun isBookBorrowed(bookId: String): Boolean {
+        return borrowedBooks.values.any { it.contains(bookId) }
     }
 
-    userBorrowedBooks.add(bookId)
-    println("${user.name} đã mượn sách ${book.title} thành công!")
-    return true
-}
-
-fun MutableMap<String, MutableList<String>>.returnBook(userId: String, bookId: String, user: User, book: Book): Boolean {
-    val userBorrowedBooks = this[userId]
-
-    if (userBorrowedBooks == null || !userBorrowedBooks.contains(bookId)) {
-        println("Lỗi: ${user.name} chưa mượn sách ${book.title}!")
-        return false
+    // Phương thức kiểm tra xem một người dùng có đang mượn sách cụ thể không
+    fun isBookBorrowedByUser(userId: String, bookId: String): Boolean {
+        return borrowedBooks[userId]?.contains(bookId) ?: false
     }
 
-    userBorrowedBooks.remove(bookId)
-    println("${user.name} đã trả sách ${book.title} thành công!")
-    return true
+    // Phương thức lấy tổng số sách đang được mượn
+    fun getTotalBorrowedBooks(): Int {
+        return borrowedBooks.values.sumOf { it.size }
+    }
+
+    // Phương thức lấy tổng số sách đang được mượn của một người dùng
+    fun getUserBorrowedBooksCount(userId: String): Int {
+        return borrowedBooks[userId]?.size ?: 0
+    }
 }

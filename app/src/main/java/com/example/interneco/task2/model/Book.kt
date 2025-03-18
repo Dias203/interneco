@@ -4,8 +4,8 @@ package com.example.interneco.task2.model
 // abstract class
 abstract class Book(
     val title: String,
-    private val author: String,
-    private val year: Int,
+    var author: String,
+    var year: Int,
     private val genre: String,
     val id : String = generateId()
 ) {
