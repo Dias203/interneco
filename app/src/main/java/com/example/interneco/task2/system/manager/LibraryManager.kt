@@ -46,10 +46,6 @@ open class LibraryManager {
         return bookManager.searchBookByTitle(title)
     }
 
-    // Lấy tất cả sách
-    fun getAllBooks(): List<Book> {
-        return bookManager.getAllBooks()
-    }
 
     /*=================================USERS========================================*/
 

@@ -34,22 +34,30 @@ class UserHandler(private val library: BorrowManager) {
     private fun addUserIntoSystem() {
         var isValid: Boolean
         do {
+            isValid = true
+
             print("Nhập tên người dùng: ")
             val name = readlnOrNull()
             print("Nhập email người dùng: ")
             val email = readlnOrNull()
 
-            isValid = true
+            if (name?.let { isInvalidName(it) } == true) {
+                println("Lỗi: Tên không hợp lệ! Tên không được chứa các ký tự đặc biệt như !<>?=+@{}_$%")
+                isValid = false
+                continue
+            }
 
-            if (name.isNullOrBlank() || email.isNullOrBlank()) {
+            if (name.isNullOrBlank() || email.isNullOrBlank() && isInvalidName(name)) {
                 println("Lỗi: Vui lòng nhập đầy đủ thông tin!")
                 isValid = false
-            } else if (!email.matches(Regex("^[^@\\s]+@gmail\\.com\$"))) {
-                println("Lỗi: Email phải có định dạng hợp lệ và kết thúc bằng @gmail.com.")
-                isValid = false
-            } else if (library.getAllUsers().any { it.email == email }) {
-                println("Email đã tồn tại! Vui lòng nhập lại.")
-                isValid = false
+            } else if (email != null) {
+                if (!email.matches(Regex("^[^@\\s]+@gmail\\.com\$"))) {
+                    println("Lỗi: Email phải có định dạng hợp lệ và kết thúc bằng @gmail.com.")
+                    isValid = false
+                } else if (library.getAllUsers().any { it.email == email }) {
+                    println("Email đã tồn tại! Vui lòng nhập lại.")
+                    isValid = false
+                }
             }
 
             if (isValid) {
@@ -59,6 +67,7 @@ class UserHandler(private val library: BorrowManager) {
             }
         } while (!isValid)
     }
+
 
     private fun findUserByName() {
         do {
@@ -112,6 +121,12 @@ class UserHandler(private val library: BorrowManager) {
         print("Tên mới: ")
         val newName = readlnOrNull()
 
+        // Kiểm tra tên hợp lệ
+        if (!newName.isNullOrBlank() && isInvalidName(newName)) {
+            println("Lỗi: Tên không hợp lệ! Tên không được chứa các ký tự đặc biệt như !<>?=+@{}_$%")
+            return
+        }
+
         print("Email mới (phải kết thúc bằng @gmail.com): ")
         val newEmail = readlnOrNull()
 
@@ -149,4 +164,11 @@ class UserHandler(private val library: BorrowManager) {
             println("Không thể xóa người dùng với ID: $userID (Người dùng không tồn tại hoặc đang mượn sách)")
         }
     }
+
+    // Phương thức kiểm tra tên có hợp lệ không
+    private fun isInvalidName(name: String): Boolean {
+        // Kiểm tra nếu tên rỗng hoặc chứa khoảng trắng, ký tự đặc biệt
+        return name.trim().isEmpty() || !name.matches(Regex("^[^!<>?=+@{}_$%\\s]+\$"))
+    }
+
 }
