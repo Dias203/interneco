@@ -6,7 +6,7 @@ class EBook(
     author: String,
     year: Int,
     genre: String,
-    private val sizeMB: Double
+    private var sizeMB: Double
 ) : Book(title, author, year, genre) {
 
     // override function
@@ -15,5 +15,21 @@ class EBook(
     override fun toString(): String {
         return "${super.toString()} - kích thước: $sizeMB MB"
     }
+
+    override fun updateBookDetails(title: String, author: String, publishYear: Int): Boolean {
+        // Cập nhật thông tin chung
+
+        this.title = title
+        this.author = author
+        this.year = publishYear
+
+        return true
+    }
+
+    fun updateSize(sizeMB: Double): Boolean {
+        this.sizeMB = sizeMB
+        return true
+    }
+
 
 }

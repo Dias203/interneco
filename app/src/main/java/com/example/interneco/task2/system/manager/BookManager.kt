@@ -1,6 +1,8 @@
 package com.example.interneco.task2.system.manager
 
 import com.example.interneco.task2.model.Book
+import com.example.interneco.task2.model.EBook
+import com.example.interneco.task2.model.PhysicalBook
 
 /**
  * Lớp quản lý sách.
@@ -22,8 +24,7 @@ class BookManager {
         println("Thêm sách thành công!")
     }
 
-    // Cập nhật thông tin sách
-    fun updateBook(bookId: String, author: String? = null, publishYear: Int? = null) {
+    fun updatePhysicalBook(bookId: String, title: String, author: String, publishYear: Int, pages: Int) {
         val book = findBookById(bookId)
 
         if (book == null) {
@@ -31,18 +32,59 @@ class BookManager {
             return
         }
 
-        // Cập nhật thông tin nếu được cung cấp
-        if (author != null) {
-            book.author = author
+        if (book !is PhysicalBook) {
+            println("Lỗi: Sách với ID $bookId không phải là sách giấy!")
+            return
         }
 
-        if (publishYear != null) {
-            book.year = publishYear
+        // Gọi phương thức chung
+        val baseResult = book.updateBookDetails(title, author, publishYear)
+
+        // Gọi phương thức riêng cho sách giấy
+        val pagesResult: Boolean = book.updatePages(pages)
+        if (pagesResult) {
+            println("Đã cập nhật số trang thành: $pages")
         }
 
-        println("Cập nhật thông tin sách thành công!")
-        println("Thông tin sách sau khi cập nhật: $book")
+        if (baseResult && pagesResult) {
+            println("Cập nhật thông tin sách thành công!")
+            println("Thông tin sách sau khi cập nhật: $book")
+        } else {
+            println("Có lỗi khi cập nhật thông tin sách!")
+        }
     }
+
+    // Cập nhật sách điện tử, tận dụng phương thức updateBook
+    fun updateEBook(bookId: String, title: String, author: String, publishYear: Int, sizeMB: Double) {
+        val book = findBookById(bookId)
+
+        if (book == null) {
+            println("Không tìm thấy sách với ID: $bookId")
+            return
+        }
+
+        if (book !is EBook) {
+            println("Lỗi: Sách với ID $bookId không phải là sách điện tử!")
+            return
+        }
+
+        // Gọi phương thức chung
+        val baseResult = book.updateBookDetails(title, author, publishYear)
+
+        // Gọi phương thức riêng cho sách điện tử
+        val sizeResult: Boolean = book.updateSize(sizeMB)
+        if (sizeResult) {
+            println("Đã cập nhật kích thước thành: $sizeMB MB")
+        }
+
+        if (baseResult && sizeResult) {
+            println("Cập nhật thông tin sách thành công!")
+            println("Thông tin sách sau khi cập nhật: $book")
+        } else {
+            println("Có lỗi khi cập nhật thông tin sách!")
+        }
+    }
+
 
     // Xóa sách
     fun deleteBook(bookId: String): Boolean {

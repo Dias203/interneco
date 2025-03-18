@@ -80,16 +80,6 @@ class BorrowManager : LibraryManager() {
         }
     }
 
-    // Phương thức kiểm tra xem một quyển sách có đang được mượn không
-    fun isBookBorrowed(bookId: String): Boolean {
-        return borrowedBooks.values.any { it.contains(bookId) }
-    }
-
-    // Phương thức kiểm tra xem một người dùng có đang mượn sách cụ thể không
-    fun isBookBorrowedByUser(userId: String, bookId: String): Boolean {
-        return borrowedBooks[userId]?.contains(bookId) ?: false
-    }
-
     // Phương thức lấy tổng số sách đang được mượn
     fun getTotalBorrowedBooks(): Int {
         return borrowedBooks.values.sumOf { it.size }

@@ -85,6 +85,7 @@ class UserHandler(private val library: BorrowManager) {
             if (userID.isNullOrBlank()) {
                 println("Lỗi: Vui lòng nhập đầy đủ thông tin!")
             } else {
+                println("$userID đang mượn ${library.getUserBorrowedBooksCount(userID)} cuốn!")
                 library.displayBorrowedBooks(userID)
             }
         } while (userID.isNullOrBlank())

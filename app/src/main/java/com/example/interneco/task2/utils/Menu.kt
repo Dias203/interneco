@@ -19,9 +19,11 @@ object Menu {
         println("6. Xóa sách")
         println("7. Mượn sách")
         println("8. Trả sách")
+        println("9. Số lượng sách đang được mượn")
         println("0. Thoát chương trình")
         print("Nhập lựa chọn của bạn: ")
     }
+
 
     fun usersMenu() {
         println("\n===== QUẢN LÝ NGƯỜI DÙNG =====")

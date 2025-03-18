@@ -28,6 +28,7 @@ class BookHandler(private val library: BorrowManager) {
                 6 -> deleteBook()
                 7 -> borrowBook()
                 8 -> returnBook()
+                9 -> getTotalBorrowedBooks()
                 0 -> inBookMenu = false
                 else -> println("Lựa chọn không hợp lệ!")
             }
@@ -152,6 +153,9 @@ class BookHandler(private val library: BorrowManager) {
         println("Thông tin sách hiện tại: $book")
         println("Nhập thông tin mới (để trống nếu không muốn cập nhật):")
 
+        print("Tên mới: ")
+        val newTitle = readlnOrNull()
+
         print("Tác giả mới: ")
         val newAuthor = readlnOrNull()
 
@@ -159,9 +163,29 @@ class BookHandler(private val library: BorrowManager) {
         val newYearStr = readlnOrNull()
         val newYear = if (newYearStr.isNullOrBlank()) null else newYearStr.toIntOrNull()
 
-        library.updateBook(bookID, newAuthor, newYear)
+        when{
+            book is PhysicalBook -> {
+                print("Số trang mới: ")
+                val newPagesStr = readlnOrNull()
+                val newPages = if (newPagesStr.isNullOrBlank()) null else newPagesStr.toIntOrNull()
+
+                // Gọi phương thức cập nhật cho sách giấy
+                library.updatePhysicalBook(bookID, newTitle!!, newAuthor!!, newYear!!, newPages!!)
+            }
+            else -> {
+                print("Kích thước mới: ")
+                val newSizeStr = readlnOrNull()
+                val newSize = if (newSizeStr.isNullOrBlank()) null else newSizeStr.toIntOrNull()
+
+                // Gọi phương thức cập nhật cho sách giấy
+                library.updateEBook(bookID, newTitle!!, newAuthor!!, newYear!!, newSize?.toDouble()!!)
+            }
+
+        }
         println("Cập nhật sách thành công!")
     }
+
+
 
     private fun deleteBook() {
         print("Nhập BookID cần xóa: ")
@@ -178,5 +202,10 @@ class BookHandler(private val library: BorrowManager) {
         } else {
             println("Không thể xóa sách với ID: $bookID (Sách không tồn tại hoặc đang được mượn)")
         }
+    }
+
+    private fun getTotalBorrowedBooks() {
+        val result = library.getTotalBorrowedBooks()
+        println("Tổng số sách đang được mượn là: $result")
     }
 }

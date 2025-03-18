@@ -19,9 +19,11 @@ open class LibraryManager {
         bookManager.addBook(book)
     }
 
-    // Cập nhật thông tin sách
-    fun updateBook(bookId: String, author: String? = null, publishYear: Int? = null) {
-        bookManager.updateBook(bookId, author, publishYear)
+    fun updatePhysicalBook(bookId: String, title: String, newAuthor: String, newPublishYear: Int, newPage: Int) {
+        bookManager.updatePhysicalBook(bookId, title, newAuthor, newPublishYear, newPage)
+    }
+    fun updateEBook(bookId: String, title: String, newAuthor: String, newPublishYear: Int, newSize: Double) {
+        bookManager.updateEBook(bookId, title, newAuthor, newPublishYear, newSize)
     }
 
     // Xóa sách

@@ -3,7 +3,7 @@ package com.example.interneco.task2.model
 
 // abstract class
 abstract class Book(
-    val title: String,
+    var title: String,
     var author: String,
     var year: Int,
     private val genre: String,
@@ -25,5 +25,8 @@ abstract class Book(
     override fun toString(): String {
         return "[$id] - $title - $author - $year - $genre - ${getType()}"
     }
+
+    abstract fun updateBookDetails(title: String, author: String, publishYear: Int): Boolean
+
 
 }
