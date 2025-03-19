@@ -144,6 +144,7 @@ class UserHandler(private val library: BorrowManager) {
             }
         }
 
+        //not-null assertion
         library.updateUser(userID, newName!!, newEmail!!)
         println("Cập nhật người dùng thành công!")
     }
@@ -165,10 +166,18 @@ class UserHandler(private val library: BorrowManager) {
         }
     }
 
-    // Phương thức kiểm tra tên có hợp lệ không
+
     private fun isInvalidName(name: String): Boolean {
-        // Kiểm tra nếu tên rỗng hoặc chứa khoảng trắng, ký tự đặc biệt
-        return name.trim().isEmpty() || !name.matches(Regex("^[^!<>?=+@{}_$%\\s]+\$"))
+        // Kiểm tra xem tên sau khi cắt khoảng trắng đầu/cuối có rỗng không
+        val trimmedName = name.trim()
+
+        // Kiểm tra nếu tên gốc bắt đầu bằng khoảng trắng (tức là có khoảng trắng ở đầu)
+        val startsWithSpace = name.startsWith(" ")
+
+        // Kiểm tra nếu tên chứa ký tự đặc biệt
+        val containsSpecialChar = trimmedName.contains(Regex("[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]+"))
+
+        return trimmedName.isEmpty() || startsWithSpace || containsSpecialChar
     }
 
 }

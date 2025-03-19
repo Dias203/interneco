@@ -85,6 +85,7 @@ class BorrowManager : LibraryManager() {
         return borrowedBooks.values.sumOf { it.size }
     }
 
+    //safe call & elvis operator
     // Phương thức lấy tổng số sách đang được mượn của một người dùng
     fun getUserBorrowedBooksCount(userId: String): Int {
         return borrowedBooks[userId]?.size ?: 0
