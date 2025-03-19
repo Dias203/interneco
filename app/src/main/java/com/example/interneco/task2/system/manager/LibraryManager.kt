@@ -27,61 +27,65 @@ class LibraryManager(
     }
 
     override fun updatePhysicalBook(bookId: String, publishYear: Int, pages: Int) {
-        val book = findBookById(bookId)
+        when (val book = findBookById(bookId)) {
+            null -> {
+                println("Không tìm thấy sách với ID: $bookId")
+                return
+            }
+            !is PhysicalBook -> {
+                println("Lỗi: Sách với ID $bookId không phải là sách giấy!")
+                return
+            }
 
-        if (book == null) {
-            println("Không tìm thấy sách với ID: $bookId")
-            return
-        }
+            else -> {
+                // Tiếp tục logic xử lý
+                // Sử dụng apply để cập nhật thông tin
+                val baseResult: Boolean
+                val pagesResult: Boolean
 
-        if (book !is PhysicalBook) {
-            println("Lỗi: Sách với ID $bookId không phải là sách giấy!")
-            return
-        }
+                book.apply {
+                    baseResult = updateBookDetails(publishYear)
+                    pagesResult = updatePages(pages)
+                }
 
-        // Gọi phương thức chung
-        val baseResult = book.updateBookDetails(publishYear)
-
-        // Gọi phương thức riêng cho sách giấy
-        val pagesResult: Boolean = book.updatePages(pages)
-        if (pagesResult) {
-            println("Đã cập nhật số trang thành: $pages")
-        }
-
-        if (baseResult && pagesResult) {
-            println("Cập nhật thông tin sách thành công!")
-            println("Thông tin sách sau khi cập nhật: $book")
-        } else {
-            println("Có lỗi khi cập nhật thông tin sách!")
+                if (baseResult && pagesResult) {
+                    println("Cập nhật thông tin sách thành công!")
+                    println("Thông tin sách sau khi cập nhật: $book")
+                } else {
+                    println("Có lỗi khi cập nhật thông tin sách!")
+                }
+            }
         }
     }
+
+
     override fun updateEBook(bookId: String, publishYear: Int, sizeMB: Double) {
-        val book = findBookById(bookId)
 
-        if (book == null) {
-            println("Không tìm thấy sách với ID: $bookId")
-            return
-        }
+        when (val book = findBookById(bookId)) {
+            null -> {
+                println("Không tìm thấy sách với ID: $bookId")
+                return
+            }
+            !is EBook -> {
+                println("Lỗi: Sách với ID $bookId không phải là sách điện tử!")
+                return
+            }
+            else -> {
+                val baseResult: Boolean
+                val sizeResult: Boolean
 
-        if (book !is EBook) {
-            println("Lỗi: Sách với ID $bookId không phải là sách điện tử!")
-            return
-        }
+                book.apply {
+                    baseResult = updateBookDetails(publishYear)
+                    sizeResult = updateSize(sizeMB)
+                }
 
-        // Gọi phương thức chung
-        val baseResult = book.updateBookDetails(publishYear)
-
-        // Gọi phương thức riêng cho sách điện tử
-        val sizeResult: Boolean = book.updateSize(sizeMB)
-        if (sizeResult) {
-            println("Đã cập nhật kích thước thành: $sizeMB MB")
-        }
-
-        if (baseResult && sizeResult) {
-            println("Cập nhật thông tin sách thành công!")
-            println("Thông tin sách sau khi cập nhật: $book")
-        } else {
-            println("Có lỗi khi cập nhật thông tin sách!")
+                if (baseResult && sizeResult) {
+                    println("Cập nhật thông tin sách thành công!")
+                    println("Thông tin sách sau khi cập nhật: $book")
+                } else {
+                    println("Có lỗi khi cập nhật thông tin sách!")
+                }
+            }
         }
     }
 
@@ -154,9 +158,11 @@ class LibraryManager(
             return
         }
 
-        // Cập nhật thông tin
-        user.name = userNewName
-        user.email = userNewEmail
+        // Sử dụng .apply để cập nhật thông tin
+        user.apply {
+            name = userNewName
+            email = userNewEmail
+        }
 
         println("Cập nhật thông tin người dùng thành công!")
         println("Thông tin người dùng sau khi cập nhật: $user")
@@ -291,7 +297,9 @@ class LibraryManager(
     }
 
     override fun getTotalBorrowedBooks(): Int {
-        return borrowedBooks.values.sumOf { it.size }
+        return borrowedBooks.values.let { values ->
+            values.sumOf { it.size }
+        }
     }
 
     override fun getUserBorrowedBooksCount(userId: String): Int {

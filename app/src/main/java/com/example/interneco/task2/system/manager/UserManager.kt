@@ -31,6 +31,7 @@ interface UserManager {
 
     // Tìm người dùng theo ID
     fun findUserById(userId: String): User?
+
     // Tìm người dùng theo tên
     fun findUserByName(userName: String): List<User>
 
