@@ -1,7 +1,7 @@
 package com.example.interneco.task2.system.handle
 
 import com.example.interneco.task2.model.User
-import com.example.interneco.task2.system.manager.BorrowManager
+import com.example.interneco.task2.system.manager.LibraryManager
 import com.example.interneco.task2.utils.Menu
 
 /**
@@ -9,7 +9,7 @@ import com.example.interneco.task2.utils.Menu
  * - Quản lý menu và các chức năng liên quan đến người dùng
  * - Tương tác với BorrowManager để thực hiện các thao tác
  */
-class UserHandler(private val library: BorrowManager) {
+class UserHandler(private val libraryManager: LibraryManager) {
 
     fun handleUsersMenu() {
         var inUserMenu = true
@@ -54,7 +54,7 @@ class UserHandler(private val library: BorrowManager) {
                 if (!email.matches(Regex("^[^@\\s]+@gmail\\.com\$"))) {
                     println("Lỗi: Email phải có định dạng hợp lệ và kết thúc bằng @gmail.com.")
                     isValid = false
-                } else if (library.getAllUsers().any { it.email == email }) {
+                } else if (libraryManager.getAllUsers().any { it.email == email }) {
                     println("Email đã tồn tại! Vui lòng nhập lại.")
                     isValid = false
                 }
@@ -62,7 +62,7 @@ class UserHandler(private val library: BorrowManager) {
 
             if (isValid) {
                 val user = User(User.Singleton.generateId(), name!!, email!!)
-                library.addUser(user)
+                libraryManager.addUser(user)
                 println("Người dùng '${user.name}' đã được thêm thành công!")
             }
         } while (!isValid)
@@ -77,13 +77,13 @@ class UserHandler(private val library: BorrowManager) {
             if (userName.isNullOrBlank()) {
                 println("Lỗi: Vui lòng nhập đầy đủ thông tin!")
             } else {
-                library.findUserByName(userName)
+                libraryManager.findUserByName(userName)
             }
         } while (userName.isNullOrBlank())
     }
 
     private fun displayUsers() {
-        library.displayUsers()
+        libraryManager.displayUsers()
     }
 
     private fun displayBorrowedBooks() {
@@ -94,8 +94,8 @@ class UserHandler(private val library: BorrowManager) {
             if (userID.isNullOrBlank()) {
                 println("Lỗi: Vui lòng nhập đầy đủ thông tin!")
             } else {
-                println("$userID đang mượn ${library.getUserBorrowedBooksCount(userID)} cuốn!")
-                library.displayBorrowedBooks(userID)
+                println("$userID đang mượn ${libraryManager.getUserBorrowedBooksCount(userID)} cuốn!")
+                libraryManager.displayBorrowedBooks(userID)
             }
         } while (userID.isNullOrBlank())
     }
@@ -109,7 +109,7 @@ class UserHandler(private val library: BorrowManager) {
             return
         }
 
-        val user = library.findUserById(userID)
+        val user = libraryManager.findUserById(userID)
         if (user == null) {
             println("Không tìm thấy người dùng với ID: $userID")
             return
@@ -138,14 +138,14 @@ class UserHandler(private val library: BorrowManager) {
             }
 
             // Kiểm tra email đã tồn tại
-            if (library.getAllUsers().any { it.id != userID && it.email == newEmail }) {
+            if (libraryManager.getAllUsers().any { it.id != userID && it.email == newEmail }) {
                 println("Email đã tồn tại! Vui lòng nhập lại.")
                 return
             }
         }
 
         //not-null assertion
-        library.updateUser(userID, newName!!, newEmail!!)
+        libraryManager.updateUser(userID, newName!!, newEmail!!)
         println("Cập nhật người dùng thành công!")
     }
 
@@ -158,7 +158,7 @@ class UserHandler(private val library: BorrowManager) {
             return
         }
 
-        val success = library.deleteUser(userID)
+        val success = libraryManager.deleteUser(userID)
         if (success) {
             println("Xóa người dùng thành công!")
         } else {

@@ -16,13 +16,8 @@ class EBook(
         return "${super.toString()} - kích thước: $sizeMB MB"
     }
 
-    override fun updateBookDetails(title: String, author: String, publishYear: Int): Boolean {
-        // Cập nhật thông tin chung
-
-        this.title = title
-        this.author = author
+    override fun updateBookDetails(publishYear: Int): Boolean {
         this.year = publishYear
-
         return true
     }
 

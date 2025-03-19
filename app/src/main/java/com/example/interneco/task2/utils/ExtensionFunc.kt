@@ -16,17 +16,15 @@ import com.example.interneco.task2.model.User
  * @param book Đối tượng Book được mượn
  * @return true nếu mượn thành công, false nếu thất bại
  */
-fun MutableMap<String, MutableList<String>>.borrowBook(userId: String, bookId: String, user: User, book: Book): Boolean {
+fun MutableMap<String, MutableList<String>>.borrowBook(userId: String, bookId: String, user: User, book: Book){
     val userBorrowedBooks = this.getOrPut(userId) { mutableListOf() }
 
     if (userBorrowedBooks.contains(bookId)) {
         println("Lỗi: ${user.name} đã mượn sách ${book.title} rồi!")
-        return false
     }
 
     userBorrowedBooks.add(bookId)
     println("${user.name} đã mượn sách ${book.title} thành công!")
-    return true
 }
 
 /**
@@ -37,15 +35,13 @@ fun MutableMap<String, MutableList<String>>.borrowBook(userId: String, bookId: S
  * @param book Đối tượng Book được trả
  * @return true nếu trả thành công, false nếu thất bại
  */
-fun MutableMap<String, MutableList<String>>.returnBook(userId: String, bookId: String, user: User, book: Book): Boolean {
+fun MutableMap<String, MutableList<String>>.returnBook(userId: String, bookId: String, user: User, book: Book){
     val userBorrowedBooks = this[userId]
 
     if (userBorrowedBooks == null || !userBorrowedBooks.contains(bookId)) {
         println("Lỗi: ${user.name} chưa mượn sách ${book.title}!")
-        return false
     }
 
-    userBorrowedBooks.remove(bookId)
+    userBorrowedBooks?.remove(bookId)
     println("${user.name} đã trả sách ${book.title} thành công!")
-    return true
 }

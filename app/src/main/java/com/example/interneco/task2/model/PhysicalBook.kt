@@ -14,12 +14,8 @@ class PhysicalBook(
         return "${super.toString()} - $page trang"
     }
 
-    override fun updateBookDetails(title: String, author: String, publishYear: Int): Boolean {
-        // Cập nhật thông tin chung
-        this.title = title
-        this.author = author
+    override fun updateBookDetails(publishYear: Int): Boolean {
         this.year = publishYear
-
         return true
     }
 

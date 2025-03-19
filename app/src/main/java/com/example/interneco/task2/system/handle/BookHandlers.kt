@@ -2,16 +2,16 @@ package com.example.interneco.task2.system.handle
 
 import com.example.interneco.task2.model.EBook
 import com.example.interneco.task2.model.PhysicalBook
-import com.example.interneco.task2.system.manager.BorrowManager
+import com.example.interneco.task2.system.manager.LibraryManager
 import com.example.interneco.task2.utils.Menu
 
 /**
  *  BookHandler: Lớp xử lý thao tác với sách trong hệ thống thư viện
  * - Quản lý menu và các chức năng liên quan đến sách
- * - Tương tác với BorrowManager để thực hiện các thao tác
+ * - Tương tác với libraryManager để thực hiện các thao tác
  */
 
-class BookHandler(private val library: BorrowManager) {
+class BookHandler(private val libraryManager: LibraryManager) {
 
     fun handleBooksMenu() {
         var inBookMenu = true
@@ -21,7 +21,7 @@ class BookHandler(private val library: BorrowManager) {
             val bookChoice = readlnOrNull()?.toIntOrNull()
 
             when (bookChoice) {
-                1 -> addBookIntoLibrary()
+                1 -> addBookIntolibraryManager()
                 2 -> updateBook()
                 3 -> findBookByTitle()
                 5 -> displayBooks()
@@ -35,7 +35,7 @@ class BookHandler(private val library: BorrowManager) {
         }
     }
 
-    private fun addBookIntoLibrary() {
+    private fun addBookIntolibraryManager() {
         var input: Int?
 
         do {
@@ -65,7 +65,7 @@ class BookHandler(private val library: BorrowManager) {
                 println("Lỗi: Vui lòng nhập đầy đủ và chính xác thông tin sách.")
             } else {
                 val book = PhysicalBook(title, author, year, genre, page)
-                library.addBook(book)
+                libraryManager.addBook(book)
             }
         } else {
             print("Nhập tên sách: ")
@@ -83,7 +83,7 @@ class BookHandler(private val library: BorrowManager) {
                 println("Lỗi: Vui lòng nhập đầy đủ và chính xác thông tin sách.")
             } else {
                 val book = EBook(title, author, year, genre, sizeMB)
-                library.addBook(book)
+                libraryManager.addBook(book)
             }
         }
     }
@@ -96,13 +96,13 @@ class BookHandler(private val library: BorrowManager) {
             if (bookTitle.isNullOrBlank()) {
                 println("Lỗi: Vui lòng nhập đầy đủ thông tin!")
             } else {
-                library.searchBookByTitle(bookTitle)
+                libraryManager.searchBookByTitle(bookTitle)
             }
         } while (bookTitle.isNullOrBlank())
     }
 
     private fun displayBooks() {
-        library.displayBooks()
+        libraryManager.displayBooks()
     }
 
     private fun borrowBook() {
@@ -115,7 +115,7 @@ class BookHandler(private val library: BorrowManager) {
             if (userID.isNullOrBlank() || bookID.isNullOrBlank()) {
                 println("Lỗi: Vui lòng nhập đầy đủ thông tin!")
             } else {
-                library.borrowBook(userID, bookID)
+                libraryManager.borrowBook(userID, bookID)
             }
         } while (userID.isNullOrBlank() || bookID.isNullOrBlank())
     }
@@ -130,7 +130,7 @@ class BookHandler(private val library: BorrowManager) {
             if (userID.isNullOrBlank() || bookID.isNullOrBlank()) {
                 println("Lỗi: Vui lòng nhập đầy đủ thông tin!")
             } else {
-                library.returnBook(userID, bookID)
+                libraryManager.returnBook(userID, bookID)
             }
         } while (userID.isNullOrBlank() || bookID.isNullOrBlank())
     }
@@ -144,20 +144,14 @@ class BookHandler(private val library: BorrowManager) {
             return
         }
 
-        val book = library.findBookById(bookID)
+        val book = libraryManager.findBookById(bookID)
         if (book == null) {
             println("Không tìm thấy sách với ID: $bookID")
             return
         }
 
         println("Thông tin sách hiện tại: $book")
-        println("Nhập thông tin mới (để trống nếu không muốn cập nhật):")
-
-        print("Tên mới: ")
-        val newTitle = readlnOrNull()
-
-        print("Tác giả mới: ")
-        val newAuthor = readlnOrNull()
+        println("Nhập thông tin mới:")
 
         print("Năm xuất bản mới: ")
         val newYearStr = readlnOrNull()
@@ -170,7 +164,7 @@ class BookHandler(private val library: BorrowManager) {
                 val newPages = if (newPagesStr.isNullOrBlank()) null else newPagesStr.toIntOrNull()
 
                 // Gọi phương thức cập nhật cho sách giấy
-                library.updatePhysicalBook(bookID, newTitle!!, newAuthor!!, newYear!!, newPages!!)
+                libraryManager.updatePhysicalBook(bookID, newYear!!, newPages!!)
             }
             else -> {
                 print("Kích thước mới: ")
@@ -178,7 +172,7 @@ class BookHandler(private val library: BorrowManager) {
                 val newSize = if (newSizeStr.isNullOrBlank()) null else newSizeStr.toIntOrNull()
 
                 // Gọi phương thức cập nhật cho sách giấy
-                library.updateEBook(bookID, newTitle!!, newAuthor!!, newYear!!, newSize?.toDouble()!!)
+                libraryManager.updateEBook(bookID, newYear!!, newSize?.toDouble()!!)
             }
 
         }
@@ -196,7 +190,7 @@ class BookHandler(private val library: BorrowManager) {
             return
         }
 
-        val success = library.deleteBook(bookID)
+        val success = libraryManager.deleteBook(bookID)
         if (success) {
             println("Xóa sách thành công!")
         } else {
@@ -205,7 +199,7 @@ class BookHandler(private val library: BorrowManager) {
     }
 
     private fun getTotalBorrowedBooks() {
-        val result = library.getTotalBorrowedBooks()
+        val result = libraryManager.getTotalBorrowedBooks()
         println("Tổng số sách đang được mượn là: $result")
     }
 }

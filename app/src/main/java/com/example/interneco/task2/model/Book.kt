@@ -1,14 +1,20 @@
 package com.example.interneco.task2.model
 
+import com.example.interneco.task2.model.User.Singleton.generateId
+
 
 // abstract class
 abstract class Book(
-    var title: String,
-    var author: String,
+    val title: String,
+    private val author: String,
     var year: Int,
     private val genre: String,
     val id : String = generateId()
 ) {
+    // loại sách
+    // abstract function
+    abstract fun getType(): String
+
     // companion object
     companion object {
         private var nextId: Int = 1
@@ -17,16 +23,10 @@ abstract class Book(
         }
     }
 
-    // loại sách
-    // abstract function
-    abstract fun getType(): String
-
     // override
     override fun toString(): String {
         return "[$id] - $title - $author - $year - $genre - ${getType()}"
     }
 
-    abstract fun updateBookDetails(title: String, author: String, publishYear: Int): Boolean
-
-
+    abstract fun updateBookDetails(publishYear: Int): Boolean
 }
