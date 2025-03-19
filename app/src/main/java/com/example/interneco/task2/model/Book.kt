@@ -1,8 +1,5 @@
 package com.example.interneco.task2.model
 
-import com.example.interneco.task2.model.User.Singleton.generateId
-
-
 // abstract class
 abstract class Book(
     val title: String,
