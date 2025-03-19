@@ -51,17 +51,18 @@ open class LibraryManager {
 
     // Thêm người dùng
     fun addUser(user: User) {
-        userManager.addUser(user)
+        userManager.addUser(user = user)
     }
+
 
     // Cập nhật thông tin người dùng
     fun updateUser(userId: String, userName: String, userEmail: String) {
-        userManager.updateUser(userId, userName, userEmail)
+        userManager.updateUser(userId = userId, userNewName = userName, userNewEmail = userEmail)
     }
 
     // Xóa người dùng
     fun deleteUser(userId: String): Boolean {
-        return userManager.deleteUser(userId)
+        return userManager.deleteUser(userId = userId)
     }
 
     // Lấy tất cả người dùng
@@ -76,12 +77,12 @@ open class LibraryManager {
 
     // Tìm người dùng theo ID
     fun findUserById(userId: String): User? {
-        return userManager.findUserById(userId)
+        return userManager.findUserById(userId = userId)
     }
 
     // Tìm người dùng theo tên
     fun findUserByName(userName: String): List<User> {
-        return userManager.findUserByName(userName)
+        return userManager.findUserByName(userName = userName)
     }
 
     /*==============================BORROW BOOKS========================================*/
