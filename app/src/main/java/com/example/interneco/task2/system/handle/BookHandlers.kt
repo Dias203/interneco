@@ -11,7 +11,13 @@ import com.example.interneco.task2.utils.Menu
  * - Tương tác với libraryManager để thực hiện các thao tác
  */
 
-class BookHandler(private val libraryManager: LibraryManager) {
+class BookHandler {
+    private lateinit var libraryManager: LibraryManager
+
+    fun setLibraryManager(manager: LibraryManager) {
+        this.libraryManager = manager
+    }
+
 
     fun handleBooksMenu() {
         var inBookMenu = true

@@ -5,6 +5,7 @@ import com.example.interneco.task2.model.EBook
 import com.example.interneco.task2.model.PhysicalBook
 import com.example.interneco.task2.model.User
 import com.example.interneco.task2.utils.borrowBook
+import com.example.interneco.task2.utils.findById
 import com.example.interneco.task2.utils.returnBook
 
 /**
@@ -118,7 +119,8 @@ class LibraryManager(
 
     // Tìm sách theo ID
     override fun findBookById(bookId: String): Book? {
-        return books.find { it.id == bookId }
+        // gọi đến inline function
+        return books.findById(bookId) { it.id }
     }
 
     // Tìm sách theo tiêu đề
@@ -200,9 +202,11 @@ class LibraryManager(
         }
     }
 
+
     // Tìm người dùng theo ID
-    override fun findUserById(userId: String): User?{
-        return users.find { it.id == userId }
+    override fun findUserById(userId: String): User? {
+        // gọi đến inline function
+        return users.findById(userId) { it.id }
     }
 
     // Tìm người dùng theo tên
@@ -302,6 +306,7 @@ class LibraryManager(
         }
     }
 
+    // null-safety và default value
     override fun getUserBorrowedBooksCount(userId: String): Int {
         return borrowedBooks[userId]?.size ?: 0
     }

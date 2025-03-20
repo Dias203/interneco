@@ -7,6 +7,7 @@
     import com.example.interneco.task2.utils.Menu
 
     fun main() {
+
         // Khởi tạo các danh sách/map cần thiết
         val users = mutableListOf<User>()
         val books = mutableListOf<Book>()
@@ -14,7 +15,10 @@
 
         // Khởi tạo LibraryManager với các tham số yêu cầu
         val libraryManager = LibraryManager(users, books, borrowedBooks)
-        val bookHandler = BookHandler(libraryManager)
+
+        // default constructor
+        val bookHandler = BookHandler()
+        bookHandler.setLibraryManager(libraryManager)
         val userHandler = UserHandler(libraryManager)
 
         var running = true

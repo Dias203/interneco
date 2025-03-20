@@ -45,3 +45,14 @@ fun MutableMap<String, MutableList<String>>.returnBook(userId: String, bookId: S
     userBorrowedBooks?.remove(bookId)
     println("${user.name} đã trả sách ${book.title} thành công!")
 }
+
+
+/**
+ * Inline function để tìm phần tử trong danh sách dựa trên ID
+ * @param id ID cần tìm kiếm
+ * @param idSelector Hàm để trích xuất ID từ phần tử trong danh sách
+ * @return Phần tử tìm thấy hoặc null nếu không tìm thấy
+ */
+inline fun <T> MutableList<T>.findById(id: String, idSelector: (T) -> String): T? {
+    return find { idSelector(it) == id }
+}
