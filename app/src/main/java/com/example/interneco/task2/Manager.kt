@@ -8,6 +8,8 @@
 
     fun main() {
 
+        // default constructor, default value, inline function, project structure
+
         // Khởi tạo các danh sách/map cần thiết
         val users = mutableListOf<User>()
         val books = mutableListOf<Book>()

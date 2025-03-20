@@ -25,5 +25,6 @@ abstract class Book(
         return "[$id] - $title - $author - $year - $genre - ${getType()}"
     }
 
+    // abstract function
     abstract fun updateBookDetails(publishYear: Int): Boolean
 }

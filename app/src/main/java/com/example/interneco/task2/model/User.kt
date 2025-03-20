@@ -1,6 +1,7 @@
 package com.example.interneco.task2.model
 
-class User(
+// Data class
+data class User(
     val id: String,
     var name: String,
     var email: String

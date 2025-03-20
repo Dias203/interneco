@@ -19,6 +19,7 @@ class PhysicalBook(
         return true
     }
 
+    // Default method
     // Phương thức cập nhật thông tin riêng của sách giấy
     fun updatePages(pages: Int): Boolean {
         this.page = pages
