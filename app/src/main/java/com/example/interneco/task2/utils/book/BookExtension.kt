@@ -1,12 +1,14 @@
+package com.example.interneco.task2.utils.book
+
+import com.example.interneco.task2.model.Book
+import com.example.interneco.task2.model.EBook
+import com.example.interneco.task2.model.PhysicalBook
+import com.example.interneco.task2.model.User
+
 /**
  * Các hàm mở rộng để quản lý việc mượn và trả sách
  * File này chứa các extension functions cho MutableMap để hỗ trợ quản lý mượn/trả sách
  */
-
-package com.example.interneco.task2.utils
-
-import com.example.interneco.task2.model.Book
-import com.example.interneco.task2.model.User
 
 /**
  * Extension function để mượn sách
@@ -46,13 +48,17 @@ fun MutableMap<String, MutableList<String>>.returnBook(userId: String, bookId: S
     println("${user.name} đã trả sách ${book.title} thành công!")
 }
 
+fun Book.updateBookDetails(publishYear: Int): Boolean {
+    this.year = publishYear
+    return true
+}
 
-/**
- * Inline function để tìm phần tử trong danh sách dựa trên ID
- * @param id ID cần tìm kiếm
- * @param idSelector Hàm để trích xuất ID từ phần tử trong danh sách
- * @return Phần tử tìm thấy hoặc null nếu không tìm thấy
- */
-inline fun <T> MutableList<T>.findById(id: String, idSelector: (T) -> String): T? {
-    return find { idSelector(it) == id }
+fun EBook.updateSize(sizeMB: Double): Boolean {
+    this.sizeMB = sizeMB
+    return true
+}
+
+fun PhysicalBook.updatePages(pages: Int): Boolean {
+    this.page = pages
+    return true
 }

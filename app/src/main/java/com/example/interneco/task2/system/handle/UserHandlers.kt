@@ -3,6 +3,7 @@ package com.example.interneco.task2.system.handle
 import com.example.interneco.task2.model.User
 import com.example.interneco.task2.system.manager.LibraryManager
 import com.example.interneco.task2.utils.Menu
+import com.example.interneco.task2.utils.user.UserIdGenerator
 
 /**
  * UserHandler: Lớp xử lý thao tác người dùng trong hệ thống thư viện
@@ -61,7 +62,7 @@ class UserHandler(private val libraryManager: LibraryManager) {
             }
 
             if (isValid) {
-                val user = User(User.Singleton.generateId(), name!!, email!!)
+                val user = User(UserIdGenerator.generateId(), name!!, email!!)
                 libraryManager.addUser(user)
                 println("Người dùng '${user.name}' đã được thêm thành công!")
             }

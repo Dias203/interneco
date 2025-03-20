@@ -4,9 +4,12 @@ import com.example.interneco.task2.model.Book
 import com.example.interneco.task2.model.EBook
 import com.example.interneco.task2.model.PhysicalBook
 import com.example.interneco.task2.model.User
-import com.example.interneco.task2.utils.borrowBook
-import com.example.interneco.task2.utils.findById
-import com.example.interneco.task2.utils.returnBook
+import com.example.interneco.task2.utils.book.borrowBook
+import com.example.interneco.task2.utils.book.returnBook
+import com.example.interneco.task2.utils.book.updateBookDetails
+import com.example.interneco.task2.utils.book.updatePages
+import com.example.interneco.task2.utils.book.updateSize
+import com.example.interneco.task2.utils.displayAll
 
 /**
  * Lớp quản lý thư viện tổng thể.
@@ -17,7 +20,7 @@ class LibraryManager(
     override val users: MutableList<User>,
     override val books: MutableList<Book>,
     override val borrowedBooks: MutableMap<String, MutableList<String>>
-) : UserManager, BookManager, BorrowManager{
+) : UserManager, BookManager, BorrowManager {
 
     /*=================================BOOKS========================================*/
 
@@ -31,11 +34,10 @@ class LibraryManager(
         when (val book = findBookById(bookId)) {
             null -> {
                 println("Không tìm thấy sách với ID: $bookId")
-                return
             }
+
             !is PhysicalBook -> {
                 println("Lỗi: Sách với ID $bookId không phải là sách giấy!")
-                return
             }
 
             else -> {
@@ -67,10 +69,12 @@ class LibraryManager(
                 println("Không tìm thấy sách với ID: $bookId")
                 return
             }
+
             !is EBook -> {
                 println("Lỗi: Sách với ID $bookId không phải là sách điện tử!")
                 return
             }
+
             else -> {
                 val baseResult: Boolean
                 val sizeResult: Boolean
@@ -90,37 +94,30 @@ class LibraryManager(
         }
     }
 
-    // Xóa sách
+
     override fun deleteBook(bookId: String): Boolean {
-        val book = findBookById(bookId)
-
-        if (book == null) {
+        return findBookById(bookId)?.let {
+            books.remove(it)
+            println("Xóa sách có ID: $bookId thành công")
+            true
+        } ?: run {
             println("Không tìm thấy sách với ID: $bookId")
-            return false
+            false
         }
-
-        books.remove(book)
-        println("Đã xóa sách có ID: $bookId thành công!")
-        return true
     }
 
     // Hiển thị danh sách sách
     override fun displayBooks() {
         println("=== Danh sách sách (${books.size} cuốn) ===")
-        if (books.isEmpty()) {
-            println("Không có sách trong thư viện!")
-            return
-        }
-
-        books.forEachIndexed { index, book ->
-            println("${index + 1} - $book")
+        if (books.isEmpty()) println("Không có sách trong thư viện!") else books.let {
+            books.displayAll { it.toString() }
         }
     }
 
     // Tìm sách theo ID
     override fun findBookById(bookId: String): Book? {
         // gọi đến inline function
-        return books.findById(bookId) { it.id }
+        return books.find { it.id == bookId }
     }
 
     // Tìm sách theo tiêu đề
@@ -153,35 +150,29 @@ class LibraryManager(
 
     // Cập nhật thông tin người dùng
     override fun updateUser(userId: String, userNewName: String, userNewEmail: String) {
-        val user = findUserById(userId)
-
-        if (user == null) {
+        findUserById(userId)?.let {
+            it.apply {
+                it.name = userNewName
+                it.email = userNewEmail
+            }
+            println("Cập nhật thông tin người dùng thành công!")
+            println("Thông tin người dùng sau khi cập nhật: $it")
+        } ?: run {
             println("Không tìm thấy người dùng với ID: $userId")
-            return
         }
-
-        // Sử dụng .apply để cập nhật thông tin
-        user.apply {
-            name = userNewName
-            email = userNewEmail
-        }
-
-        println("Cập nhật thông tin người dùng thành công!")
-        println("Thông tin người dùng sau khi cập nhật: $user")
     }
 
     // Xóa người dùng
-    override fun deleteUser(userId: String) : Boolean {
-        val user = findUserById(userId)
+    override fun deleteUser(userId: String): Boolean {
 
-        if (user == null) {
+        return findUserById(userId)?.let {
+            users.remove(it)
+            println("Xóa người dùng có ID: $userId thành công")
+            true
+        } ?: run {
             println("Không tìm thấy người dùng với ID: $userId")
-            return false
+            false
         }
-
-        users.remove(user)
-        println("Đã xóa người dùng có ID: $userId thành công!")
-        return true
     }
 
     // Lấy tất cả người dùng
@@ -192,13 +183,8 @@ class LibraryManager(
     // Hiển thị danh sách người dùng
     override fun displayUsers() {
         println("=== Danh sách người dùng (${users.size} người) ===")
-        if (users.isEmpty()) {
-            println("Không có người dùng nào!")
-            return
-        }
-
-        users.forEachIndexed { index, user ->
-            println("${index + 1} - $user")
+        if (users.isEmpty()) println("Không có sách trong thư viện!") else users.let {
+            users.displayAll { it.toString() }
         }
     }
 
@@ -206,11 +192,11 @@ class LibraryManager(
     // Tìm người dùng theo ID
     override fun findUserById(userId: String): User? {
         // gọi đến inline function
-        return users.findById(userId) { it.id }
+        return users.find { it.id == userId }
     }
 
     // Tìm người dùng theo tên
-    override fun findUserByName(userName: String): List<User>{
+    override fun findUserByName(userName: String): List<User> {
         val result = users.filter {
             it.name.contains(userName, ignoreCase = true)
         }
@@ -235,7 +221,7 @@ class LibraryManager(
      * @param bookId ID của sách muốn mượn
      * @return true nếu mượn thành công, false nếu thất bại
      */
-    override fun borrowBook(userId: String, bookId: String){
+    override fun borrowBook(userId: String, bookId: String) {
         val user = findUserById(userId)
         val book = findBookById(bookId)
 
@@ -256,7 +242,7 @@ class LibraryManager(
      * @param bookId ID của sách được trả
      * @return true nếu trả thành công, false nếu thất bại
      */
-    override fun returnBook(userId: String, bookId: String){
+    override fun returnBook(userId: String, bookId: String) {
         val user = findUserById(userId)
         val book = findBookById(bookId)
 
