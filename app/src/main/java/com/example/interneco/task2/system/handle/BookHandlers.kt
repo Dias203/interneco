@@ -142,13 +142,15 @@ class BookHandler {
     }
 
     private fun updateBook() {
-        print("Nhập BookID cần cập nhật: ")
-        val bookID = readlnOrNull()
-
-        if (bookID.isNullOrBlank()) {
-            println("Lỗi: ID sách không được để trống!")
-            return
-        }
+        // Nhập và kiểm tra BookID
+        var bookID: String?
+        do {
+            print("Nhập BookID cần cập nhật: ")
+            bookID = readlnOrNull()
+            if (bookID.isNullOrBlank()) {
+                println("Lỗi: ID sách không được để trống! Vui lòng nhập lại.")
+            }
+        } while (bookID.isNullOrBlank())
 
         val book = libraryManager.findBookById(bookID)
         if (book == null) {
@@ -159,28 +161,52 @@ class BookHandler {
         println("Thông tin sách hiện tại: $book")
         println("Nhập thông tin mới:")
 
-        print("Năm xuất bản mới: ")
-        val newYearStr = readlnOrNull()
-        val newYear = if (newYearStr.isNullOrBlank()) null else newYearStr.toIntOrNull()
+        // Nhập và kiểm tra năm xuất bản
+        var newYear: Int?
+        do {
+            print("Năm xuất bản mới: ")
+            val newYearStr = readlnOrNull()
+            newYear = if (newYearStr.isNullOrBlank()) null else newYearStr.toIntOrNull()
+            if (newYearStr.isNullOrBlank()) {
+                println("Lỗi: Năm xuất bản không được để trống! Vui lòng nhập lại.")
+            } else if (newYear == null) {
+                println("Lỗi: Năm xuất bản phải là số nguyên! Vui lòng nhập lại.")
+            }
+        } while (newYear == null)
 
-        when{
+        when {
             book is PhysicalBook -> {
-                print("Số trang mới: ")
-                val newPagesStr = readlnOrNull()
-                val newPages = if (newPagesStr.isNullOrBlank()) null else newPagesStr.toIntOrNull()
+                // Nhập và kiểm tra số trang
+                var newPages: Int?
+                do {
+                    print("Số trang mới: ")
+                    val newPagesStr = readlnOrNull()
+                    newPages = if (newPagesStr.isNullOrBlank()) null else newPagesStr.toIntOrNull()
+                    if (newPagesStr.isNullOrBlank()) {
+                        println("Lỗi: Số trang không được để trống! Vui lòng nhập lại.")
+                    } else if (newPages == null) {
+                        println("Lỗi: Số trang phải là số nguyên! Vui lòng nhập lại.")
+                    }
+                } while (newPages == null)
 
-                // Gọi phương thức cập nhật cho sách giấy
-                libraryManager.updatePhysicalBook(bookID, newYear!!, newPages!!)
+                libraryManager.updatePhysicalBook(bookID, newYear, newPages)
             }
             else -> {
-                print("Kích thước mới: ")
-                val newSizeStr = readlnOrNull()
-                val newSize = if (newSizeStr.isNullOrBlank()) null else newSizeStr.toIntOrNull()
+                // Nhập và kiểm tra kích thước
+                var newSize: Double?
+                do {
+                    print("Kích thước mới: ")
+                    val newSizeStr = readlnOrNull()
+                    newSize = if (newSizeStr.isNullOrBlank()) null else newSizeStr.toDoubleOrNull()
+                    if (newSizeStr.isNullOrBlank()) {
+                        println("Lỗi: Kích thước không được để trống! Vui lòng nhập lại.")
+                    } else if (newSize == null) {
+                        println("Lỗi: Kích thước phải là số! Vui lòng nhập lại.")
+                    }
+                } while (newSize == null)
 
-                // Gọi phương thức cập nhật cho sách giấy
-                libraryManager.updateEBook(bookID, newYear!!, newSize?.toDouble()!!)
+                libraryManager.updateEBook(bookID, newYear, newSize)
             }
-
         }
         println("Cập nhật sách thành công!")
     }
