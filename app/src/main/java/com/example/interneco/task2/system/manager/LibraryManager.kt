@@ -67,12 +67,10 @@ class LibraryManager(
         when (val book = findBookById(bookId)) {
             null -> {
                 println("Không tìm thấy sách với ID: $bookId")
-                return
             }
 
             !is EBook -> {
                 println("Lỗi: Sách với ID $bookId không phải là sách điện tử!")
-                return
             }
 
             else -> {
